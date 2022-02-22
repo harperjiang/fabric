@@ -9,7 +9,7 @@
         <servlet-class>hao.daslab.blockchain.couchdblogger.LoggerServlet</servlet-class>
         <init-param>
             <param-name>couchdbHost</param-name>
-            <param-value>localhost:5984</param-value>
+            <param-value>http://localhost:5984</param-value>
         </init-param>
     </servlet>
 

@@ -24,29 +24,36 @@ public class LoggerServlet extends HttpServlet {
 
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    private String couchdbHost = "localhost:5984";
+    private String couchdbHost = "http://localhost:5984";
+    private String logFolder = "/tmp";
 
     private WorkloadLogger logger;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         String initHost = config.getInitParameter("couchdbHost");
-        if(!StringUtils.isEmpty(initHost)) {
-            couchdbHost = initHost;
+        String logFolder = config.getInitParameter("logFolder");
+        if (!StringUtils.isEmpty(initHost)) {
+            this.couchdbHost = initHost;
         }
+        if (!StringUtils.isEmpty(logFolder)) {
+            this.logFolder = logFolder;
+        }
+
+        logger = new WorkloadLogger(this.logFolder);
     }
 
-    // TODO Rewrite Host
     protected void copy(HttpResponse from, HttpServletResponse to) throws IOException {
         for (Header h : from.getAllHeaders()) {
             to.setHeader(h.getName(), h.getValue());
         }
         IOUtils.copy(from.getEntity().getContent(), to.getOutputStream());
+        to.getOutputStream().flush();
         to.setStatus(from.getStatusLine().getStatusCode());
     }
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpEntityEnclosingRequestBase to) throws IOException {
-        String path = req.getContextPath();
+        String path = req.getRequestURI();
         logger.log(to.getMethod(), path);
         String url = couchdbHost + path;
         to.setURI(URI.create(url));
@@ -54,6 +61,7 @@ public class LoggerServlet extends HttpServlet {
         for (String s : Collections.list(req.getHeaderNames())) {
             to.setHeader(s, req.getHeader(s));
         }
+
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IOUtils.copy(req.getInputStream(), buffer);
         buffer.close();
@@ -64,7 +72,7 @@ public class LoggerServlet extends HttpServlet {
     }
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpRequestBase to) throws IOException {
-        String path = req.getContextPath();
+        String path = req.getRequestURI();
         logger.log(to.getMethod(), path);
         String url = couchdbHost + path;
         to.setURI(URI.create(url));
