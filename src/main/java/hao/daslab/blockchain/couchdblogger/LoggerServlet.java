@@ -1,12 +1,12 @@
 package hao.daslab.blockchain.couchdblogger;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -18,22 +18,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collection;
 import java.util.Collections;
 
 public class LoggerServlet extends HttpServlet {
 
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    private String coachdbHost;
+    private String couchdbHost = "localhost:5984";
 
     private WorkloadLogger logger;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        this.coachdbHost = config.getInitParameter("couchdbHost");
+        String initHost = config.getInitParameter("couchdbHost");
+        if(!StringUtils.isEmpty(initHost)) {
+            couchdbHost = initHost;
+        }
     }
 
+    // TODO Rewrite Host
     protected void copy(HttpResponse from, HttpServletResponse to) throws IOException {
         for (Header h : from.getAllHeaders()) {
             to.setHeader(h.getName(), h.getValue());
@@ -44,7 +47,8 @@ public class LoggerServlet extends HttpServlet {
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpEntityEnclosingRequestBase to) throws IOException {
         String path = req.getContextPath();
-        String url = coachdbHost + path;
+        logger.log(to.getMethod(), path);
+        String url = couchdbHost + path;
         to.setURI(URI.create(url));
 
         for (String s : Collections.list(req.getHeaderNames())) {
@@ -61,7 +65,8 @@ public class LoggerServlet extends HttpServlet {
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpRequestBase to) throws IOException {
         String path = req.getContextPath();
-        String url = coachdbHost + path;
+        logger.log(to.getMethod(), path);
+        String url = couchdbHost + path;
         to.setURI(URI.create(url));
 
         for (String s : Collections.list(req.getHeaderNames())) {
