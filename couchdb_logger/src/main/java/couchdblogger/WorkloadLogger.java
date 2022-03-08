@@ -1,4 +1,4 @@
-package hao.daslab.blockchain.couchdblogger;
+package couchdblogger;
 
 import org.apache.commons.lang3.StringUtils;
 

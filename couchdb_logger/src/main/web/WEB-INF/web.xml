@@ -5,8 +5,8 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>LoggerServlet</servlet-name>
-        <servlet-class>hao.daslab.blockchain.couchdblogger.LoggerServlet</servlet-class>
+        <servlet-name>couchdblogger.LoggerServlet</servlet-name>
+        <servlet-class>couchdblogger.LoggerServlet</servlet-class>
         <init-param>
             <param-name>couchdbHost</param-name>
             <param-value>http://localhost:5984</param-value>
@@ -14,7 +14,7 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>LoggerServlet</servlet-name>
+        <servlet-name>couchdblogger.LoggerServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 </web-app>
