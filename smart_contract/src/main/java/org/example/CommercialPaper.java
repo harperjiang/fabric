@@ -19,6 +19,7 @@ public class CommercialPaper extends State {
     public final static String ISSUED = "ISSUED";
     public final static String TRADING = "TRADING";
     public final static String REDEEMED = "REDEEMED";
+    public final static String PENDING = "PENDING";
 
     @Property()
     private String state="";
@@ -47,6 +48,11 @@ public class CommercialPaper extends State {
         return this.state.equals(CommercialPaper.REDEEMED);
     }
 
+    @JSONPropertyIgnore
+    public boolean isPending() {
+        return this.state.equals(CommercialPaper.PENDING);
+    }
+
     public CommercialPaper setIssued() {
         this.state = CommercialPaper.ISSUED;
         return this;
@@ -59,6 +65,11 @@ public class CommercialPaper extends State {
 
     public CommercialPaper setRedeemed() {
         this.state = CommercialPaper.REDEEMED;
+        return this;
+    }
+
+    public CommercialPaper setPending() {
+        this.state = CommercialPaper.PENDING;
         return this;
     }
 

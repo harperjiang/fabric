@@ -3,18 +3,13 @@ SPDX-License-Identifier: Apache-2.0
 */
 package org.example;
 
-import java.util.logging.Logger;
-
 import org.example.ledgerapi.State;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
-import org.hyperledger.fabric.contract.annotation.Contact;
-import org.hyperledger.fabric.contract.annotation.Contract;
-import org.hyperledger.fabric.contract.annotation.Default;
-import org.hyperledger.fabric.contract.annotation.Info;
-import org.hyperledger.fabric.contract.annotation.License;
-import org.hyperledger.fabric.contract.annotation.Transaction;
+import org.hyperledger.fabric.contract.annotation.*;
 import org.hyperledger.fabric.shim.ChaincodeStub;
+
+import java.util.logging.Logger;
 
 /**
  * A custom context provides easy access to list of all commercial papers
@@ -22,7 +17,6 @@ import org.hyperledger.fabric.shim.ChaincodeStub;
 
 /**
  * Define commercial paper smart contract by extending Fabric Contract class
- *
  */
 @Contract(name = "org.papernet.commercialpaper", info = @Info(title = "MyAsset contract", description = "", version = "0.0.1", license = @License(name = "SPDX-License-Identifier: Apache-2.0", url = ""), contact = @Contact(email = "java-contract@example.com", name = "java-contract", url = "http://java-contract.me")))
 @Default
@@ -60,21 +54,21 @@ public class CommercialPaperContract implements ContractInterface {
      * Issue commercial paper
      *
      * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
+     * @param {String}  issuer commercial paper issuer
      * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} issueDateTime paper issue date
-     * @param {String} maturityDateTime paper maturity date
+     * @param {String}  issueDateTime paper issue date
+     * @param {String}  maturityDateTime paper maturity date
      * @param {Integer} faceValue face value of paper
      */
     @Transaction
     public CommercialPaper issue(CommercialPaperContext ctx, String issuer, String paperNumber, String issueDateTime,
-            String maturityDateTime, int faceValue) {
+                                 String maturityDateTime, int faceValue) {
 
         System.out.println(ctx);
 
         // create an instance of the paper
         CommercialPaper paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime,
-                faceValue,issuer,"");
+                faceValue, issuer, "");
 
         // Smart contract, rather than paper, moves paper into ISSUED state
         paper.setIssued();
@@ -95,19 +89,19 @@ public class CommercialPaperContract implements ContractInterface {
      * Buy commercial paper
      *
      * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
+     * @param {String}  issuer commercial paper issuer
      * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} currentOwner current owner of paper
-     * @param {String} newOwner new owner of paper
+     * @param {String}  currentOwner current owner of paper
+     * @param {String}  newOwner new owner of paper
      * @param {Integer} price price paid for this paper
-     * @param {String} purchaseDateTime time paper was purchased (i.e. traded)
+     * @param {String}  purchaseDateTime time paper was purchased (i.e. traded)
      */
     @Transaction
     public CommercialPaper buy(CommercialPaperContext ctx, String issuer, String paperNumber, String currentOwner,
-            String newOwner, int price, String purchaseDateTime) {
+                               String newOwner, int price, String purchaseDateTime) {
 
         // Retrieve the current paper using key fields provided
-        String paperKey = State.makeKey(new String[] { paperNumber });
+        String paperKey = State.makeKey(new String[]{paperNumber});
         CommercialPaper paper = ctx.paperList.getPaper(paperKey);
 
         // Validate current owner
@@ -137,16 +131,16 @@ public class CommercialPaperContract implements ContractInterface {
      * Redeem commercial paper
      *
      * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
+     * @param {String}  issuer commercial paper issuer
      * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} redeemingOwner redeeming owner of paper
-     * @param {String} redeemDateTime time paper was redeemed
+     * @param {String}  redeemingOwner redeeming owner of paper
+     * @param {String}  redeemDateTime time paper was redeemed
      */
     @Transaction
     public CommercialPaper redeem(CommercialPaperContext ctx, String issuer, String paperNumber, String redeemingOwner,
-            String redeemDateTime) {
+                                  String redeemDateTime) {
 
-        String paperKey = CommercialPaper.makeKey(new String[] { paperNumber });
+        String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
 
         CommercialPaper paper = ctx.paperList.getPaper(paperKey);
 
@@ -167,4 +161,49 @@ public class CommercialPaperContract implements ContractInterface {
         return paper;
     }
 
+    @Transaction
+    public CommercialPaper buyRequest(CommercialPaperContext ctx, String issuer, String paperNumber, String currentOwner, String newOwner, int price, String purchaseDateTime) {
+        // Retrieve the current paper using key fields provided
+        String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
+        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
+
+        // Validate current owner - this is really information for the user trying the sample, rather than any 'authorisation' check per se FYI
+        if (!paper.getOwner().equals(currentOwner)) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by " + currentOwner + " provided as a parameter");
+        }
+        // paper set to 'PENDING' - can only be transferred (confirmed) by identity from owning org (MSP check).
+        paper.setPending();
+
+        // Update the paper
+        ctx.paperList.updatePaper(paper);
+        return paper;
+    }
+
+    @Transaction
+    public CommercialPaper transfer(CommercialPaperContext ctx, String issuer, String paperNumber, String newOwner, String confirmDateTime) {
+
+        // Retrieve the current paper using key fields provided
+        String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
+        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
+
+        // Validate current owner's MSP in the paper === invoking transferor's MSP id - can only transfer if you are the owning org.
+
+        if (!paper.getOwner().equals(ctx.getClientIdentity().getMSPID())) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by the current invoking Organisation, and not authorised to transfer");
+        }
+
+        // Paper needs to be 'pending' - which means you need to have run 'buy_pending' transaction first.
+        if (!paper.isPending()) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not currently in state: PENDING for transfer to occur: must run buy_request transaction first");
+        }
+        // else all good
+
+        paper.setOwner(newOwner);
+        // set the MSP of the transferee (so that, that org may also pass MSP check, if subsequently transferred/sold on)
+        paper.setTrading();
+
+        // Update the paper
+        ctx.paperList.updatePaper(paper);
+        return paper;
+    }
 }
