@@ -11,10 +11,6 @@
     </properties>
     <repositories>
         <repository>
-            <id>mulesoft</id>
-            <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
-        </repository>
-        <repository>
             <id>jitpack</id>
             <url>https://jitpack.io</url>
         </repository>

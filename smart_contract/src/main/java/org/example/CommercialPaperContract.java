@@ -72,14 +72,14 @@ public class CommercialPaperContract implements ContractInterface {
 
         // Smart contract, rather than paper, moves paper into ISSUED state
         paper.setIssued();
+        paper.setIssuerMSP(ctx.getClientIdentity().getMSPID());
+        paper.setOwnerMSP(ctx.getClientIdentity().getMSPID());
 
         // Newly issued paper is owned by the issuer
-        paper.setOwner(issuer);
-
         System.out.println(paper);
         // Add the paper to the list of all similar commercial papers in the ledger
         // world state
-        ctx.paperList.addPaper(paper);
+        ctx.getPaperList().addPaper(paper);
 
         // Must return a serialized paper to caller of smart contract
         return paper;
@@ -102,7 +102,7 @@ public class CommercialPaperContract implements ContractInterface {
 
         // Retrieve the current paper using key fields provided
         String paperKey = State.makeKey(new String[]{paperNumber});
-        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
+        CommercialPaper paper = ctx.getPaperList().getPaper(paperKey);
 
         // Validate current owner
         if (!paper.getOwner().equals(currentOwner)) {
@@ -112,18 +112,16 @@ public class CommercialPaperContract implements ContractInterface {
         // First buy moves state from ISSUED to TRADING
         if (paper.isIssued()) {
             paper.setTrading();
-        }
-
-        // Check paper is not already REDEEMED
-        if (paper.isTrading()) {
             paper.setOwner(newOwner);
+            paper.setOwnerMSP(ctx.getClientIdentity().getMSPID());
+            paper.setTradeValue(price);
         } else {
             throw new RuntimeException(
                     "Paper " + issuer + paperNumber + " is not trading. Current state = " + paper.getState());
         }
 
         // Update the paper
-        ctx.paperList.updatePaper(paper);
+        ctx.getPaperList().updatePaper(paper);
         return paper;
     }
 
@@ -142,7 +140,7 @@ public class CommercialPaperContract implements ContractInterface {
 
         String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
 
-        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
+        CommercialPaper paper = ctx.getPaperList().getPaper(paperKey);
 
         // Check paper is not REDEEMED
         if (paper.isRedeemed()) {
@@ -150,46 +148,55 @@ public class CommercialPaperContract implements ContractInterface {
         }
 
         // Verify that the redeemer owns the commercial paper before redeeming it
-        if (paper.getOwner().equals(redeemingOwner)) {
+        if (paper.getOwner().equals(redeemingOwner) && paper.getOwnerMSP().equals(ctx.getClientIdentity().getMSPID())) {
             paper.setOwner(paper.getIssuer());
+            paper.setOwnerMSP(paper.getIssuerMSP());
             paper.setRedeemed();
         } else {
             throw new RuntimeException("Redeeming owner does not own paper" + issuer + paperNumber);
         }
 
-        ctx.paperList.updatePaper(paper);
+        ctx.getPaperList().updatePaper(paper);
         return paper;
     }
 
     @Transaction
-    public CommercialPaper buyRequest(CommercialPaperContext ctx, String issuer, String paperNumber, String currentOwner, String newOwner, int price, String purchaseDateTime) {
+    public CommercialPaper buyrequest(CommercialPaperContext ctx, String issuer, String paperNumber, String currentOwner, String newOwner, int proposedPrice, String purchaseDateTime) {
         // Retrieve the current paper using key fields provided
         String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
-        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
+        CommercialPaper paper = ctx.getPaperList().getPaper(paperKey);
 
         // Validate current owner - this is really information for the user trying the sample, rather than any 'authorisation' check per se FYI
         if (!paper.getOwner().equals(currentOwner)) {
-            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by " + currentOwner + " provided as a parameter");
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by " + currentOwner);
         }
         // paper set to 'PENDING' - can only be transferred (confirmed) by identity from owning org (MSP check).
-        paper.setPending();
+        if (paper.isIssued() || paper.isTrading()) {
+            paper.setPending();
+            paper.setRequester(newOwner);
+            paper.setRequesterMSP(ctx.getClientIdentity().getMSPID());
+            paper.setRequestValue(proposedPrice);
+        }
 
         // Update the paper
-        ctx.paperList.updatePaper(paper);
+        ctx.getPaperList().updatePaper(paper);
         return paper;
     }
 
     @Transaction
     public CommercialPaper transfer(CommercialPaperContext ctx, String issuer, String paperNumber, String newOwner, String confirmDateTime) {
-
         // Retrieve the current paper using key fields provided
         String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
-        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
+        CommercialPaper paper = ctx.getPaperList().getPaper(paperKey);
 
         // Validate current owner's MSP in the paper === invoking transferor's MSP id - can only transfer if you are the owning org.
 
-        if (!paper.getOwner().equals(ctx.getClientIdentity().getMSPID())) {
-            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by the current invoking Organisation, and not authorised to transfer");
+        if (!paper.getOwnerMSP().equals(ctx.getClientIdentity().getMSPID())) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by " + ctx.getClientIdentity().getMSPID());
+        }
+
+        if (!paper.getRequester().equals(newOwner)) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not requested by the newOwner " + newOwner);
         }
 
         // Paper needs to be 'pending' - which means you need to have run 'buy_pending' transaction first.
@@ -199,11 +206,42 @@ public class CommercialPaperContract implements ContractInterface {
         // else all good
 
         paper.setOwner(newOwner);
+        paper.setTradeValue(paper.getRequestValue());
+        paper.setOwnerMSP(paper.getRequesterMSP());
+        paper.setRequester("");
+        paper.setRequesterMSP("");
+        paper.setRequestValue(0);
         // set the MSP of the transferee (so that, that org may also pass MSP check, if subsequently transferred/sold on)
         paper.setTrading();
 
         // Update the paper
-        ctx.paperList.updatePaper(paper);
+        ctx.getPaperList().updatePaper(paper);
+        return paper;
+    }
+
+    @Transaction
+    public CommercialPaper reject(CommercialPaperContext ctx, String issuer, String paperNumber) {
+        String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
+        CommercialPaper paper = ctx.getPaperList().getPaper(paperKey);
+
+        // Validate current owner's MSP in the paper === invoking transferor's MSP id - can only transfer if you are the owning org.
+
+        if (!paper.getOwnerMSP().equals(ctx.getClientIdentity().getMSPID())) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by the current invoking Organisation, and not authorised to transfer");
+        }
+
+        // Paper needs to be 'pending' - which means you need to have run 'buy_pending' transaction first.
+        if (!paper.isPending()) {
+            throw new RuntimeException("Paper " + issuer + paperNumber + " is not currently in state: PENDING for transfer to occur: must run buy_request transaction first");
+        }
+        // else all good
+        paper.setRequester("");
+        paper.setRequestValue(0);
+        paper.setRequesterMSP("");
+        paper.setTrading();
+
+        // Update the paper
+        ctx.getPaperList().updatePaper(paper);
         return paper;
     }
 }
