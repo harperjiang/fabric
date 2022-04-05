@@ -17,11 +17,17 @@ public class LoaderRunner {
 
         for (int i = 0; i < NUM_ROUND; ++i) {
             String paperNumber = StringUtils.leftPad(String.valueOf(i), length, '0');
-
-            if (rand.nextBoolean()) {
-                runner.runRoute1(paperNumber);
-            } else {
-                runner.runRoute2(paperNumber);
+            int next = rand.nextInt(3);
+            switch (next) {
+                case 0:
+                    runner.runRoute1(paperNumber);
+                    break;
+                case 1:
+                    runner.runRoute2(paperNumber);
+                    break;
+                case 2:
+                    runner.runRoute3(paperNumber);
+                    break;
             }
         }
     }
@@ -40,6 +46,12 @@ public class LoaderRunner {
         CommercialPaper paper = executeAs(magnetocorp, "issue", "MagnetoCorp", paperNum, "2020-05-31", "2020-11-30", "5000000");
         paper = executeAs(digibank, "buyrequest", "MagnetoCorp", paperNum, "MagnetoCorp", "DigiBank", "520000", "2022-05-01");
         paper = executeAs(magnetocorp, "transfer", "MagnetoCorp", paperNum, "MagnetoCorp", "2022-05-01");
+    }
+
+    void runRoute3(String paperNum) {
+        CommercialPaper paper = executeAs(magnetocorp, "issue", "MagnetoCorp", paperNum, "2020-05-31", "2020-11-30", "5000000");
+        paper = executeAs(digibank, "buyrequest", "MagnetoCorp", paperNum, "MagnetoCorp", "DigiBank", "520000", "2022-05-01");
+        paper = executeAs(magnetocorp, "reject", "MagnetoCorp", paperNum);
     }
 
     CommercialPaper executeAs(Role role, String... parameters) {
