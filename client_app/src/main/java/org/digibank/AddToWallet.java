@@ -39,9 +39,9 @@ public class AddToWallet {
       Path walletPath = Paths.get(".", "wallet");
       Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 
-      Path credentialPath = Paths.get("..", "..", "..",".." ,"test-network", "organizations",
+      Path credentialPath = Paths.get("test-network", "organizations",
           "peerOrganizations", "org1.example.com", "users", "User1@org1.example.com", "msp");
-      System.out.println("credentialPath: " + credentialPath.toString());
+      System.out.println("credentialPath: " + credentialPath.toAbsolutePath());
       Path certificatePath = credentialPath.resolve(Paths.get("signcerts",
           "User1@org1.example.com-cert.pem"));
       System.out.println("certificatePem: " + certificatePath.toString());
