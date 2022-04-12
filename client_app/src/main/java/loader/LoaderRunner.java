@@ -8,9 +8,9 @@ import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
-public class LoaderRunner {
+public class LoaderRunner implements AutoCloseable {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         int NUM_ROUND = 0;
         int length = String.valueOf(NUM_ROUND).length() + 1;
@@ -33,13 +33,13 @@ public class LoaderRunner {
                     break;
             }
         }
+        runner.close();
     }
 
-    static Path connectionProfile = null;
-    static String networkName = null;
+    static String networkName = "mychannel";
 
-    static final String CHAINCODE_NAME = "";
-    static final String CONTRACT_NAME = "";
+    static final String CHAINCODE_NAME = "papercontract";
+    static final String CONTRACT_NAME = "org.papernet.commercialpaper";
 
     Connection digibankConnection;
     Connection magnetocorpConnection;
@@ -48,8 +48,8 @@ public class LoaderRunner {
     Contract magnetocorp;
 
     public LoaderRunner() {
-        digibankConnection = Connection.connectAs(connectionProfile, networkName, new Role.Digibank());
-        magnetocorpConnection = Connection.connectAs(connectionProfile, networkName, new Role.MagnetoCorp());
+        digibankConnection = Connection.connectAs(Path.of("connections", "connection-org1.yaml"), networkName, new Role.Digibank());
+        magnetocorpConnection = Connection.connectAs(Path.of("connections", "connection-org2.yaml"), networkName, new Role.MagnetoCorp());
 
         digibank = digibankConnection.getContract(CHAINCODE_NAME, CONTRACT_NAME);
         magnetocorp = magnetocorpConnection.getContract(CHAINCODE_NAME, CONTRACT_NAME);
@@ -82,6 +82,12 @@ public class LoaderRunner {
         } catch (GatewayException | TimeoutException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        digibankConnection.close();
+        magnetocorpConnection.close();
     }
 }
 

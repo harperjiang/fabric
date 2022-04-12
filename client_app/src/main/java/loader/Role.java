@@ -10,13 +10,10 @@ public abstract class Role {
 
     private String username;
 
-    private String walletPath;
-
     private Wallet wallet;
 
     public Role(String username, String walletPath) {
         this.username = username;
-        this.walletPath = walletPath;
         try {
             this.wallet = Wallets.newFileSystemWallet(Path.of(walletPath));
         } catch (IOException e) {
@@ -34,13 +31,13 @@ public abstract class Role {
 
     public static class Digibank extends Role {
         public Digibank() {
-            super("", "");
+            super("User1@org1.example.com", "wallet");
         }
     }
 
     public static class MagnetoCorp extends Role {
         public MagnetoCorp() {
-            super("", "");
+            super("User1@org2.example.com", "wallet");
         }
     }
 
