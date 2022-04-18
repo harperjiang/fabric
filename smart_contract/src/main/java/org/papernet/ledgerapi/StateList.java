@@ -1,6 +1,6 @@
-package org.example.ledgerapi;
+package org.papernet.ledgerapi;
 
-import org.example.ledgerapi.impl.StateListImpl;
+import org.papernet.ledgerapi.impl.StateListImpl;
 import org.hyperledger.fabric.contract.Context;
 
 public interface StateList {

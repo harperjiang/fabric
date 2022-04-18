@@ -3,9 +3,9 @@ SPDX-License-Identifier: Apache-2.0
 */
 package org.papernet.ledgerapi;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import org.json.JSONObject;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * State class. States have a class, unique key, and a lifecycle current state

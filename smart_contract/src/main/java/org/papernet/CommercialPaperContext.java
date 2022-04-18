@@ -1,4 +1,4 @@
-package org.example;
+package org.papernet;
 
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeStub;

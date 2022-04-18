@@ -1,11 +1,11 @@
 /*
 SPDX-License-Identifier: Apache-2.0
 */
-package org.example.ledgerapi;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+package org.papernet.ledgerapi;
 
 import org.json.JSONObject;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * State class. States have a class, unique key, and a lifecycle current state

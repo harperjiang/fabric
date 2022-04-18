@@ -2,9 +2,9 @@
 SPDX-License-Identifier: Apache-2.0
 */
 
-package org.example;
+package org.papernet;
 
-import org.example.ledgerapi.StateList;
+import org.papernet.ledgerapi.StateList;
 import org.hyperledger.fabric.contract.Context;
 
 public class PaperList {
