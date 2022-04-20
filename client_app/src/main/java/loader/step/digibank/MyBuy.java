@@ -11,7 +11,7 @@ public class MyBuy {
     public static void main(String[] args) throws Exception {
         Connection digibankcon = Connection.connectAs("connection-org1.yaml", "mychannel", new Role.Digibank());
         Contract contract = digibankcon.getContract(LoaderRunner.CHAINCODE_NAME, LoaderRunner.CONTRACT_NAME);
-        byte[] response = contract.submitTransaction("buy", "MagnetoCorp", "00001", "MagnetoCorp", "DigiBank", "4900000", "2020-05-31");
+        byte[] response = contract.submitTransaction("buy", "MagnetoCorp", args[0], "MagnetoCorp", "DigiBank", args[1], args[2]);
         // Process response
         System.out.println("Process buy transaction response.");
         CommercialPaper paper = CommercialPaper.deserialize(response);
