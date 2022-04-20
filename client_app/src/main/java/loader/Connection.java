@@ -4,6 +4,7 @@ import org.hyperledger.fabric.gateway.*;
 import org.papernet.CommercialPaper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -17,11 +18,12 @@ public class Connection implements AutoCloseable {
     private Connection() {
     }
 
-    public static Connection connectAs(Path profile, String networkName, Role role) {
+    public static Connection connectAs(String profile, String networkName, Role role) {
         Gateway.Builder builder = Gateway.createBuilder();
         try {
             // Set connection options on the gateway builder
-            builder.identity(role.getWallet(), role.getUsername()).networkConfig(profile).discovery(false);
+            InputStream profileStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(profile);
+            builder.identity(role.getWallet(), role.getUsername()).networkConfig(profileStream).discovery(false);
             // Connect to gateway using application specified parameters
             Gateway gateway = builder.connect();
             Network network = gateway.getNetwork(networkName);
