@@ -4,7 +4,7 @@
 
 plugins {
     id 'java'
-    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
 repositories {
@@ -27,12 +27,12 @@ dependencies {
 group = 'org.harper.fabric'
 version = '0.0.1'
 description = 'client_app'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
+shadowJar {
+    baseName = 'chaincode'
+    version = null
+    classifier = null
 }
+
+targetCompatibility = JavaVersion.VERSION_11

@@ -36,10 +36,10 @@ public class LoaderRunner implements AutoCloseable {
         runner.close();
     }
 
-    static String networkName = "mychannel";
+    public static String networkName = "mychannel";
 
-    static final String CHAINCODE_NAME = "papercontract";
-    static final String CONTRACT_NAME = "org.papernet.commercialpaper";
+    public static final String CHAINCODE_NAME = "papercontract";
+    public static final String CONTRACT_NAME = "org.papernet.commercialpaper";
 
     Connection digibankConnection;
     Connection magnetocorpConnection;
@@ -48,8 +48,8 @@ public class LoaderRunner implements AutoCloseable {
     Contract magnetocorp;
 
     public LoaderRunner() {
-        digibankConnection = Connection.connectAs(Path.of("connections", "connection-org1.yaml"), networkName, new Role.Digibank());
-        magnetocorpConnection = Connection.connectAs(Path.of("connections", "connection-org2.yaml"), networkName, new Role.MagnetoCorp());
+        digibankConnection = Connection.connectAs("connection-org1.yaml", networkName, new Role.Digibank());
+        magnetocorpConnection = Connection.connectAs("connection-org2.yaml", networkName, new Role.MagnetoCorp());
 
         digibank = digibankConnection.getContract(CHAINCODE_NAME, CONTRACT_NAME);
         magnetocorp = magnetocorpConnection.getContract(CHAINCODE_NAME, CONTRACT_NAME);
