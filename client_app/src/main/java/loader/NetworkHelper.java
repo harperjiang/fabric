@@ -30,13 +30,13 @@ public class NetworkHelper {
         }};
 
         // Install the all-trusting trust manager
-        SSLContext sc = SSLContext.getInstance("SSL");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//        SSLContext sc = SSLContext.getInstance("SSL");
+//        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+//        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
         SSLContext tlsc = SSLContext.getInstance("TLS");
         tlsc.init(null, trustAllCerts, new java.security.SecureRandom());
-
+        HttpsURLConnection.setDefaultSSLSocketFactory(tlsc.getSocketFactory());
         // Install the all-trusting host verifier
         HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
     }
