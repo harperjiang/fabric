@@ -10,7 +10,7 @@ import org.papernet.CommercialPaper;
 public class MyBuy {
 
     public static void main(String[] args) throws Exception {
-        NetworkHelper.trustAllCerts();
+//        NetworkHelper.trustAllCerts();
         Connection digibankcon = Connection.connectAs("connection-org1.yaml", "mychannel", new Role.Digibank());
         Contract contract = digibankcon.getContract(LoaderRunner.CHAINCODE_NAME, LoaderRunner.CONTRACT_NAME);
         byte[] response = contract.submitTransaction("buy", "MagnetoCorp", args[0], "MagnetoCorp", "DigiBank", args[1], args[2]);
