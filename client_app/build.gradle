@@ -31,7 +31,7 @@ description = 'client_app'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 shadowJar {
-    baseName = 'chaincode'
+    baseName = 'clientapp'
     version = null
     classifier = null
 }
