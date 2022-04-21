@@ -1,4 +1,4 @@
-package loader;
+package org.harper.loader;
 
 import org.hyperledger.fabric.gateway.Wallet;
 import org.hyperledger.fabric.gateway.Wallets;
@@ -7,6 +7,7 @@ import org.hyperledger.fabric.gateway.spi.WalletStore;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public abstract class Role {
 
@@ -17,21 +18,10 @@ public abstract class Role {
     public Role(String username) {
         this.username = username;
         try {
-            this.wallet = Wallets.newWallet(createStore());
+            this.wallet = Wallets.newFileSystemWallet(Paths.get(".","wallet"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    protected static String[] IDS = {"User1@org1.example.com", "User1@org2.example.com"};
-
-    protected static WalletStore createStore() throws IOException {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        WalletStore store = new InMemoryWalletStore();
-        for (String id : IDS) {
-            store.put(id, loader.getResourceAsStream("wallet/" + id + ".id"));
-        }
-        return store;
     }
 
     public Wallet getWallet() {

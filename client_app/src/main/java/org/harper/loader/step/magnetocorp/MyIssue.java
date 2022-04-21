@@ -1,9 +1,8 @@
-package loader.step.magnetocorp;
+package org.harper.loader.step.magnetocorp;
 
-import loader.Connection;
-import loader.LoaderRunner;
-import loader.NetworkHelper;
-import loader.Role;
+import org.harper.loader.Connection;
+import org.harper.loader.LoaderRunner;
+import org.harper.loader.Role;
 import org.hyperledger.fabric.gateway.Contract;
 import org.papernet.CommercialPaper;
 

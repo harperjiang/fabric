@@ -15,6 +15,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import org.harper.ClientAppConfig;
 import org.hyperledger.fabric.gateway.Identities;
 import org.hyperledger.fabric.gateway.Identity;
 import org.hyperledger.fabric.gateway.Wallet;
@@ -40,9 +41,9 @@ public class AddToWallet {
             Path walletPath = Paths.get(".", "wallet");
             Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 
-            Path credentialPath = Paths.get(args[1], "test-network", "organizations",
+            Path credentialPath = Paths.get(ClientAppConfig.FABRIC_SAMPLE_PATH, "test-network", "organizations",
                     "peerOrganizations", "org1.example.com", "users", "User1@org1.example.com", "msp");
-            System.out.println("credentialPath: " + credentialPath.toAbsolutePath());
+            System.out.println("credentialPath: " + credentialPath.toString());
             Path certificatePath = credentialPath.resolve(Paths.get("signcerts",
                     "User1@org1.example.com-cert.pem"));
             System.out.println("certificatePem: " + certificatePath.toString());

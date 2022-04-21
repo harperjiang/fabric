@@ -1,14 +1,9 @@
-package loader;
+package org.harper.loader;
 
 import org.hyperledger.fabric.gateway.*;
-import org.papernet.CommercialPaper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 public class Connection implements AutoCloseable {
 

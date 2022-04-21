@@ -1,10 +1,9 @@
-package loader;
+package org.harper.loader;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hyperledger.fabric.gateway.*;
 import org.papernet.CommercialPaper;
 
-import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
