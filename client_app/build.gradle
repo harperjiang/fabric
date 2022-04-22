@@ -21,6 +21,8 @@ repositories {
 dependencies {
     implementation 'org.hyperledger.fabric:fabric-gateway-java:2.2.3'
     implementation 'org.json:json:20211205'
+    implementation 'io.grpc:grpc-netty-shaded:1.42.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.4.1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
