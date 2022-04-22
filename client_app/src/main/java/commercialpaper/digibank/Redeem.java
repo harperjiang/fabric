@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
+import client.ClientAppConfig;
 import commercialpaper.papernet.CommercialPaper;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.Gateway;
@@ -39,7 +40,8 @@ public class Redeem {
 
 			String userName = "User1@org1.example.com";
 
-			Path connectionProfile = Paths.get("..", "gateway", "connection-org1.yaml");
+			Path connectionProfile = Paths.get(ClientAppConfig.FABRIC_SAMPLE_PATH, "test-network", "organizations",
+					"peerOrganizations", "org1.example.com", "connection-org1.yaml");
 
 			// Set connection options on the gateway builder
 			builder.identity(wallet, userName).networkConfig(connectionProfile).discovery(false);
