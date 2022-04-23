@@ -7,10 +7,11 @@ package basic.papernet;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import basic.papernet.ledgerapi.State;
+import com.google.gson.Gson;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
-import org.json.JSONObject;
-import org.json.JSONPropertyIgnore;
+
+import java.nio.charset.StandardCharsets;
 
 @DataType()
 public class CommercialPaper extends State {
@@ -33,22 +34,18 @@ public class CommercialPaper extends State {
         return this;
     }
 
-    @JSONPropertyIgnore()
     public boolean isIssued() {
         return this.state.equals(CommercialPaper.ISSUED);
     }
 
-    @JSONPropertyIgnore()
     public boolean isTrading() {
         return this.state.equals(CommercialPaper.TRADING);
     }
 
-    @JSONPropertyIgnore()
     public boolean isRedeemed() {
         return this.state.equals(CommercialPaper.REDEEMED);
     }
 
-    @JSONPropertyIgnore
     public boolean isPending() {
         return this.state.equals(CommercialPaper.PENDING);
     }
@@ -237,24 +234,7 @@ public class CommercialPaper extends State {
      * @param {Buffer} data to form back into the object
      */
     public static CommercialPaper deserialize(byte[] data) {
-        JSONObject json = new JSONObject(new String(data, UTF_8));
-
-        String issuer = json.getString("issuer");
-        String issuerMSP = json.getString("issuerMSP");
-        String paperNumber = json.getString("paperNumber");
-        String issueDateTime = json.getString("issueDateTime");
-        String maturityDateTime = json.getString("maturityDateTime");
-        String owner = json.getString("owner");
-        String ownerMSP = json.getString("ownerMSP");
-        int faceValue = json.getInt("faceValue");
-        String state = json.getString("state");
-        int tradeValue = json.getInt("tradeValue");
-        String requester = json.getString("requester");
-        String requesterMSP = json.getString("requesterMSP");
-        int requestValue = json.getInt("requestValue");
-        return createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue, owner, state)
-                .setIssuerMSP(issuerMSP).setOwnerMSP(ownerMSP).setTradeValue(tradeValue)
-                .setRequester(requester).setRequesterMSP(requesterMSP).setRequestValue(requestValue);
+        return new Gson().fromJson(new String(data, UTF_8), CommercialPaper.class);
     }
 
     public static byte[] serialize(CommercialPaper paper) {
