@@ -1,10 +1,10 @@
-package basic.papernet.ledgerapi.impl;
+package com.example.papernet.ledgerapi.impl;
 
 import java.util.Arrays;
 
-import basic.papernet.ledgerapi.StateList;
-import basic.papernet.ledgerapi.State;
-import basic.papernet.ledgerapi.StateDeserializer;
+import com.example.papernet.ledgerapi.StateList;
+import com.example.papernet.ledgerapi.State;
+import com.example.papernet.ledgerapi.StateDeserializer;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;

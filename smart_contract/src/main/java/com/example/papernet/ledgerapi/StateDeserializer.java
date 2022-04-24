@@ -1,4 +1,4 @@
-package basic.papernet.ledgerapi;
+package com.example.papernet.ledgerapi;
 
 @FunctionalInterface
 public interface StateDeserializer {

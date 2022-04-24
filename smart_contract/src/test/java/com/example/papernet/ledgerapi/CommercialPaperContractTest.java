@@ -1,9 +1,9 @@
-package basic.papernet.ledgerapi;
+package com.example.papernet.ledgerapi;
 
-import basic.papernet.CommercialPaper;
-import basic.papernet.CommercialPaperContext;
-import basic.papernet.CommercialPaperContract;
-import basic.papernet.PaperList;
+import com.example.papernet.CommercialPaper;
+import com.example.papernet.CommercialPaperContext;
+import com.example.papernet.CommercialPaperContract;
+import com.example.papernet.PaperList;
 import org.hyperledger.fabric.contract.ClientIdentity;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,9 +1,12 @@
 /*
 SPDX-License-Identifier: Apache-2.0
 */
-package basic.papernet.ledgerapi;
+package com.example.papernet.ledgerapi;
 
+import com.example.papernet.CommercialPaper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.harper.ConsistentSerializer;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -28,6 +31,9 @@ public class State {
     }
 
     public String[] getSplitKey() {
+        if(this.key == null) {
+            return null;
+        }
         return State.splitKey(this.key);
     }
 
@@ -39,7 +45,9 @@ public class State {
      * @return {buffer} buffer with the data to store
      */
     public static byte[] serialize(Object object) {
-        return new Gson().toJson(object).getBytes(UTF_8);
+        Gson gson = new GsonBuilder().registerTypeAdapter(CommercialPaper.class,
+                new ConsistentSerializer<>(CommercialPaper.class)).create();
+        return gson.toJson(object).getBytes(UTF_8);
     }
 
     /**

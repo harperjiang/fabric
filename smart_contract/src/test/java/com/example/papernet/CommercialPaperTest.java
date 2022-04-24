@@ -1,6 +1,6 @@
-package basic.papernet;
+package com.example.papernet;
 
-import basic.papernet.ledgerapi.State;
+import com.example.papernet.ledgerapi.State;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -27,8 +27,7 @@ class CommercialPaperTest {
         paper.setFaceValue(5000000);
         paper.setIssueDateTime("2020-05-31");
 
-        String expected = "{\"state\":\"ISSUED\",\"paperNumber\":\"00001\",\"issuer\":\"MagnetoCorp\",\"issuerMSP\":\"Org2MSP\",\"issueDateTime\":\"2020-05-31\",\"faceValue\":5000000,\"maturityDateTime\":\"2020-11-30\",\"owner\":\"MagnetoCorp\",\"ownerMSP\":\"Org2MSP\",\"tradeValue\":0,\"requester\":\"\",\"requesterMSP\":\"\",\"requestValue\":0,\"key\":\"00001\"}";
-
+        String expected = "{\"faceValue\":5000000,\"issueDateTime\":\"2020-05-31\",\"issuer\":\"MagnetoCorp\",\"issuerMSP\":\"Org2MSP\",\"maturityDateTime\":\"2020-11-30\",\"owner\":\"MagnetoCorp\",\"ownerMSP\":\"Org2MSP\",\"paperNumber\":\"00001\",\"requestValue\":0,\"requester\":\"\",\"requesterMSP\":\"\",\"state\":\"ISSUED\",\"tradeValue\":0}";
         assertEquals(expected, new String(State.serialize(paper), StandardCharsets.UTF_8));
     }
 }

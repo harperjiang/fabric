@@ -2,16 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package basic.papernet;
+package com.example.papernet;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import basic.papernet.ledgerapi.State;
+import com.example.papernet.ledgerapi.State;
 import com.google.gson.Gson;
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
-
-import java.nio.charset.StandardCharsets;
 
 @DataType()
 public class CommercialPaper extends State {
@@ -234,7 +232,7 @@ public class CommercialPaper extends State {
      * @param {Buffer} data to form back into the object
      */
     public static CommercialPaper deserialize(byte[] data) {
-        return new Gson().fromJson(new String(data, UTF_8), CommercialPaper.class);
+        return new Gson().fromJson(new String(data, UTF_8), CommercialPaper.class).setKey();
     }
 
     public static byte[] serialize(CommercialPaper paper) {

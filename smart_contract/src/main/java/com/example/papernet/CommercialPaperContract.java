@@ -1,9 +1,9 @@
 /*
 SPDX-License-Identifier: Apache-2.0
 */
-package basic.papernet;
+package com.example.papernet;
 
-import basic.papernet.ledgerapi.State;
+import com.example.papernet.ledgerapi.State;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.*;
