@@ -35,8 +35,17 @@ public class LoggerServlet extends HttpServlet {
         if (!StringUtils.isEmpty(initHost)) {
             this.couchdbHost = initHost;
         }
+        // Also support override the setting with env
+        String envCouchdbHost = System.getenv("COUCHDB_HOST");
+        if(!StringUtils.isEmpty(envCouchdbHost)) {
+            this.couchdbHost = envCouchdbHost;
+        }
         if (!StringUtils.isEmpty(logFolder)) {
             this.logFolder = logFolder;
+        }
+        String envlogFolder = System.getenv("LOG_FOLDER");
+        if(!StringUtils.isEmpty(envlogFolder)) {
+            this.logFolder = envlogFolder;
         }
 
         logger = new WorkloadLogger(this.logFolder);
