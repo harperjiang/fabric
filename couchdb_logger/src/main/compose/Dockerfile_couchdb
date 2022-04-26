@@ -1,0 +1,2 @@
+FROM couchdb:latest
+COPY couchdbfile/. /opt/couchdb/data/

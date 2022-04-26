@@ -1,0 +1,40 @@
+version: "3.5"
+services:
+  db0:
+    container_name: realcouchdb0
+    build:
+      context: .
+      dockerfile: Dockerfile_couchdb
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+  db1:
+    container_name: realcouchdb1
+    build:
+      context: .
+      dockerfile: Dockerfile_couchdb
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+  logger0:
+    container_name: couchdb0
+    build:
+      context: .
+      dockerfile: Dockerfile_logger
+    environment:
+      - COUCHDB_HOST=http://realcouchdb0:5984/
+    ports:
+      - "5984:5984"
+  logger1:
+    container_name: couchdb1
+    build:
+      context: .
+      dockerfile: Dockerfile_logger
+    environment:
+      - COUCHDB_HOST=http://realcouchdb1:5984/
+    ports:
+      - "7984:5984"
+networks:
+  default:
+    external:
+      name: fabric_test
