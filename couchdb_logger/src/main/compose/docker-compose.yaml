@@ -24,7 +24,7 @@ services:
     environment:
       - COUCHDB_HOST=http://realcouchdb0:5984/
     ports:
-      - "5984:5984"
+      - "8080:8080"
   logger1:
     container_name: couchdb1
     build:
@@ -33,7 +33,7 @@ services:
     environment:
       - COUCHDB_HOST=http://realcouchdb1:5984/
     ports:
-      - "7984:5984"
+      - "8081:8080"
 networks:
   default:
     external:
