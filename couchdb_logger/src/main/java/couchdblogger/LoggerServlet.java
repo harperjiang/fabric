@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Locale;
 
 public class LoggerServlet extends HttpServlet {
 
@@ -37,14 +38,14 @@ public class LoggerServlet extends HttpServlet {
         }
         // Also support override the setting with env
         String envCouchdbHost = System.getenv("COUCHDB_HOST");
-        if(!StringUtils.isEmpty(envCouchdbHost)) {
+        if (!StringUtils.isEmpty(envCouchdbHost)) {
             this.couchdbHost = envCouchdbHost;
         }
         if (!StringUtils.isEmpty(logFolder)) {
             this.logFolder = logFolder;
         }
         String envlogFolder = System.getenv("LOG_FOLDER");
-        if(!StringUtils.isEmpty(envlogFolder)) {
+        if (!StringUtils.isEmpty(envlogFolder)) {
             this.logFolder = envlogFolder;
         }
 
@@ -67,7 +68,9 @@ public class LoggerServlet extends HttpServlet {
         to.setURI(URI.create(url));
 
         for (String s : Collections.list(req.getHeaderNames())) {
-            to.setHeader(s, req.getHeader(s));
+            if (!s.toLowerCase(Locale.ROOT).equals("content-length")) {
+                to.setHeader(s, req.getHeader(s));
+            }
         }
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
