@@ -5,16 +5,12 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>couchdblogger.LoggerServlet</servlet-name>
+        <servlet-name>LoggerServlet</servlet-name>
         <servlet-class>couchdblogger.LoggerServlet</servlet-class>
-        <init-param>
-            <param-name>couchdbHost</param-name>
-            <param-value>http://localhost:5984</param-value>
-        </init-param>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>couchdblogger.LoggerServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <servlet-name>LoggerServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
