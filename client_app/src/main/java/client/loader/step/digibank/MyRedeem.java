@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 public class MyRedeem {
 
-    public void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 //        NetworkHelper.trustAllCerts();
         Path con1path = Path.of(ClientAppConfig.FABRIC_SAMPLE_PATH, "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
         try (Connection digibankcon = Connection.connectAs(con1path, "mychannel", new Role.Digibank())) {
