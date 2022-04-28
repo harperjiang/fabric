@@ -1,4 +1,4 @@
-package client.loader;
+package client.load;
 
 import java.security.cert.X509Certificate;
 import javax.net.ssl.HostnameVerifier;
