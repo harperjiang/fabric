@@ -33,13 +33,13 @@ public class RouteTwo {
 
         response = digicontract.submitTransaction("buyrequest", "MagnetoCorp", paperNumber, "MagnetoCorp", "DigiBank", Utils.randomPrice(), Utils.randomDate());
         // Process response
-        System.out.println("Process buy transaction response.");
+        System.out.println("Process request transaction response.");
         paper = CommercialPaper.deserialize(response);
         System.out.println(paper);
 
-        response = digicontract.submitTransaction("transfer", "MagnetoCorp", paperNumber, "DigiBank", Utils.randomDate());
+        response = magcontract.submitTransaction("transfer", "MagnetoCorp", paperNumber, "DigiBank", Utils.randomDate());
         // Process response
-        System.out.println("Process redeem transaction response.");
+        System.out.println("Process transfer transaction response.");
         paper = CommercialPaper.deserialize(response);
         System.out.println(paper);
 
