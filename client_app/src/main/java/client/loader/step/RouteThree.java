@@ -39,7 +39,7 @@ public class RouteThree {
         paper = CommercialPaper.deserialize(response);
         System.out.println(paper);
 
-        response = digicontract.submitTransaction("reject", "MagnetoCorp", paperNumber);
+        response = magcontract.submitTransaction("reject", "MagnetoCorp", paperNumber);
         // Process response
         System.out.println("Process redeem transaction response.");
         paper = CommercialPaper.deserialize(response);
