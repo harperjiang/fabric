@@ -35,13 +35,13 @@ public class RouteThree {
         response = digicontract.submitTransaction("buyrequest", "MagnetoCorp", paperNumber, "MagnetoCorp", "DigiBank",
                 Utils.randomPrice(), Utils.randomDate());
         // Process response
-        System.out.println("Process buy transaction response.");
+        System.out.println("Process buyrequest transaction response.");
         paper = CommercialPaper.deserialize(response);
         System.out.println(paper);
 
         response = magcontract.submitTransaction("reject", "MagnetoCorp", paperNumber);
         // Process response
-        System.out.println("Process redeem transaction response.");
+        System.out.println("Process reject transaction response.");
         paper = CommercialPaper.deserialize(response);
         System.out.println(paper);
     }
