@@ -228,7 +228,9 @@ public class CommercialPaper extends State {
 
     @Override
     public String toString() {
-        return "Paper::" + this.key + "   " + this.getPaperNumber() + " " + getIssuer() + " " + getFaceValue();
+        String[] components = {this.key, this.getPaperNumber(), getState(), getIssuer(), getOwner(),
+                String.valueOf(getFaceValue()), String.valueOf(getTradeValue())};
+        return "Paper::" + String.join(",", components);
     }
 
     /**
