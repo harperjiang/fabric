@@ -70,8 +70,8 @@ public class LoaderRunner implements AutoCloseable {
     void runRoute2(String paperNum) {
         CommercialPaper paper = execute(magnetocorp, "issue", "MagnetoCorp", paperNum, "2020-05-31", "2020-11-30", "5000000");
         paper = execute(digibank, "buyrequest", "MagnetoCorp", paperNum, "MagnetoCorp", "DigiBank", "520000", "2022-05-01");
-        paper = execute(magnetocorp, "transfer", "MagnetoCorp", paperNum, "MagnetoCorp", "2022-05-01");
-        paper = execute(digibank, "redeem", "MagnetoCorp", paperNum, "Digibank", "2022-05-01");
+        paper = execute(magnetocorp, "transfer", "MagnetoCorp", paperNum, "DigiBank", "2022-05-01");
+        paper = execute(digibank, "redeem", "MagnetoCorp", paperNum, "DigiBank", "2022-05-01");
     }
 
     void runRoute3(String paperNum) {
