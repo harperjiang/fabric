@@ -1,6 +1,9 @@
 package client.loader;
 
 import client.ClientAppConfig;
+import client.loader.step.RouteOne;
+import client.loader.step.RouteThree;
+import client.loader.step.RouteTwo;
 import org.apache.commons.lang3.StringUtils;
 import org.hyperledger.fabric.gateway.*;
 import commercialpaper.papernet.CommercialPaper;
@@ -56,38 +59,18 @@ public class LoaderRunner implements AutoCloseable {
         digibankConnection = Connection.connectAs(con1path, NETWORK_NAME, new Role.Digibank());
         magnetocorpConnection = Connection.connectAs(con2path, NETWORK_NAME, new Role.MagnetoCorp());
 
-        digibank = digibankConnection.getContract(CHAINCODE_NAME, CONTRACT_NAME);
-        magnetocorp = magnetocorpConnection.getContract(CHAINCODE_NAME, CONTRACT_NAME);
     }
 
-    void runRoute1(String paperNum) {
-        // Each loop finish a round of issue-buy-redeem cycle. Random pause between the operations
-        CommercialPaper paper = execute(magnetocorp, "issue", "MagnetoCorp", paperNum, "2020-05-31", "2020-11-30", "5000000");
-        paper = execute(digibank, "buy", "MagnetoCorp", paperNum, "MagnetoCorp", "DigiBank", "4900000", "2020-05-31");
-        paper = execute(digibank, "redeem", "MagnetoCorp", paperNum, "DigiBank", "2020-11-30");
+    void runRoute1(String paperNum) throws Exception {
+        new RouteOne().execute(magnetocorpConnection, digibankConnection, paperNum);
     }
 
-    void runRoute2(String paperNum) {
-        CommercialPaper paper = execute(magnetocorp, "issue", "MagnetoCorp", paperNum, "2020-05-31", "2020-11-30", "5000000");
-        paper = execute(digibank, "buyrequest", "MagnetoCorp", paperNum, "MagnetoCorp", "DigiBank", "520000", "2022-05-01");
-        paper = execute(magnetocorp, "transfer", "MagnetoCorp", paperNum, "DigiBank", "2022-05-01");
-        paper = execute(digibank, "redeem", "MagnetoCorp", paperNum, "DigiBank", "2022-05-01");
+    void runRoute2(String paperNum) throws Exception {
+        new RouteTwo().execute(magnetocorpConnection, digibankConnection, paperNum);
     }
 
-    void runRoute3(String paperNum) {
-        CommercialPaper paper = execute(magnetocorp, "issue", "MagnetoCorp", paperNum, "2020-05-31", "2020-11-30", "5000000");
-        paper = execute(digibank, "buyrequest", "MagnetoCorp", paperNum, "MagnetoCorp", "DigiBank", "520000", "2022-05-01");
-        paper = execute(magnetocorp, "reject", "MagnetoCorp", paperNum);
-    }
-
-    CommercialPaper execute(Contract contract, String method, String... parameters) {
-        try {
-            byte[] response = contract.submitTransaction(method, parameters);
-            CommercialPaper paper = CommercialPaper.deserialize(response);
-            return paper;
-        } catch (GatewayException | TimeoutException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    void runRoute3(String paperNum) throws Exception {
+        new RouteThree().execute(magnetocorpConnection, digibankConnection, paperNum);
     }
 
     @Override
