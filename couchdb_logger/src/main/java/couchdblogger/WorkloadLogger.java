@@ -26,19 +26,20 @@ public class WorkloadLogger {
         if (url == null) {
             url = "/";
         }
-        url = url.replaceFirst("^/", "");
-        String[] pieces = url.split("/");
-
-        long numVars = Arrays.stream(pieces).filter(p -> !p.isEmpty() && !p.startsWith("_")).count();
-        if (numVars == 1) {// DB
-            output.println(MessageFormat.format("DB:{0}:{1}", method, url));
-        }
-        if (numVars == 2) {// Doc
-            output.println(MessageFormat.format("DOC:{0}:{1}", method, url));
-        }
-        if (numVars == 3) {// Attachment
-            output.println(MessageFormat.format("ATTA:{0}:{1}", method, url));
-        }
+//        url = url.replaceFirst("^/", "");
+//        String[] pieces = url.split("/");
+//
+//        long numVars = Arrays.stream(pieces).filter(p -> !p.isEmpty() && !p.startsWith("_")).count();
+//        if (numVars == 1) {// DB
+//            output.println(MessageFormat.format("DB:{0}:{1}", method, url));
+//        }
+//        if (numVars == 2) {// Doc
+//            output.println(MessageFormat.format("DOC:{0}:{1}", method, url));
+//        }
+//        if (numVars == 3) {// Attachment
+//            output.println(MessageFormat.format("ATTA:{0}:{1}", method, url));
+//        }
+        output.println(MessageFormat.format("{0},{1},{2}", String.valueOf(System.currentTimeMillis()), method, url));
     }
 
     class FlushThread extends Thread {
