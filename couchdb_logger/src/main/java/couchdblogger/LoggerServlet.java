@@ -96,6 +96,11 @@ public class LoggerServlet extends HttpServlet {
         copy(response, resp);
     }
 
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("Request:" + req.getMethod() + ":" + req.getRequestURI());
+        super.service(req, resp);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

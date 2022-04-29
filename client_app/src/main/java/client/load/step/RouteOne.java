@@ -7,10 +7,13 @@ import client.load.Utils;
 import client.load.LoadRunner;
 import commercialpaper.papernet.CommercialPaper;
 import org.hyperledger.fabric.gateway.Contract;
+import org.slf4j.*;
 
 import java.nio.file.Path;
 
 public class RouteOne {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     public static void main(String[] args) throws Exception {
         Path con1path = Path.of(ClientAppConfig.FABRIC_SAMPLE_PATH, "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
@@ -24,24 +27,31 @@ public class RouteOne {
     }
 
     public void execute(Contract magcontract, Contract digicontract, String paperNumber) throws Exception {
+        CommercialPaper paper = null;
         byte[] response = magcontract.submitTransaction("issue", "MagnetoCorp", paperNumber,
                 Utils.randomDate(), Utils.randomDate(), Utils.randomPrice());
         // Process response
-        System.out.println("Process issue transaction response.");
-        CommercialPaper paper = CommercialPaper.deserialize(response);
-        System.out.println(paper);
+        if (logger.isDebugEnabled()) {
+            System.out.println("Process issue transaction response.");
+            paper = CommercialPaper.deserialize(response);
+            System.out.println(paper);
+        }
 
         response = digicontract.submitTransaction("buy", "MagnetoCorp", paperNumber, "MagnetoCorp", "DigiBank",
                 Utils.randomPrice(), Utils.randomDate());
-        // Process response
-        System.out.println("Process buy transaction response.");
-        paper = CommercialPaper.deserialize(response);
-        System.out.println(paper);
+        if(logger.isDebugEnabled()) {
+            // Process response
+            System.out.println("Process buy transaction response.");
+            paper = CommercialPaper.deserialize(response);
+            System.out.println(paper);
+        }
 
         response = digicontract.submitTransaction("redeem", "MagnetoCorp", paperNumber, "DigiBank", Utils.randomDate());
-        // Process response
-        System.out.println("Process redeem transaction response.");
-        paper = CommercialPaper.deserialize(response);
-        System.out.println(paper);
+        if(logger.isDebugEnabled()) {
+            // Process response
+            System.out.println("Process redeem transaction response.");
+            paper = CommercialPaper.deserialize(response);
+            System.out.println(paper);
+        }
     }
 }
