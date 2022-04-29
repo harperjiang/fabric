@@ -54,6 +54,9 @@ public class LoggerServlet extends HttpServlet {
 
     protected void copy(HttpResponse from, HttpServletResponse to) throws IOException {
         for (Header h : from.getAllHeaders()) {
+            if (h.getName().equalsIgnoreCase("transfer-encoding")) {
+                continue;
+            }
             to.setHeader(h.getName(), h.getValue());
         }
         IOUtils.copy(from.getEntity().getContent(), to.getOutputStream());
@@ -68,7 +71,7 @@ public class LoggerServlet extends HttpServlet {
         to.setURI(URI.create(url));
 
         for (String s : Collections.list(req.getHeaderNames())) {
-            if (!s.toLowerCase(Locale.ROOT).equals("content-length")) {
+            if (!s.equalsIgnoreCase("content-length")) {
                 to.setHeader(s, req.getHeader(s));
             }
         }
