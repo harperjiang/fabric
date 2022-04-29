@@ -53,7 +53,6 @@ public class LoggerServlet extends HttpServlet {
     }
 
     protected void copy(HttpResponse from, HttpServletResponse to) throws IOException {
-
         for (Header h : from.getAllHeaders()) {
             if (h.getName().equalsIgnoreCase("transfer-encoding")) {
                 continue;
@@ -103,7 +102,14 @@ public class LoggerServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("Request:" + req.getMethod() + ":" + req.getRequestURI());
+        for (String header : Collections.list(req.getHeaderNames())) {
+            System.out.println(header + ":" + req.getHeader(header));
+        }
         super.service(req, resp);
+        System.out.println(resp.getStatus());
+        for (String header : resp.getHeaderNames()) {
+            System.out.println(header + ":" + resp.getHeader(header));
+        }
     }
 
     @Override
