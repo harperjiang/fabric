@@ -1,4 +1,4 @@
-package client.loader;
+package client.load;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,9 +1,8 @@
-package client.loader;
+package client.load;
 
 import org.hyperledger.fabric.gateway.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 
 public class Connection implements AutoCloseable {

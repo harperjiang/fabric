@@ -1,8 +1,7 @@
 package client.loader;
 
+import client.load.Utils;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UtilsTest {
 

@@ -1,4 +1,4 @@
-package client.loader;
+package client.load;
 
 import org.hyperledger.fabric.gateway.Wallet;
 import org.hyperledger.fabric.gateway.Wallets;

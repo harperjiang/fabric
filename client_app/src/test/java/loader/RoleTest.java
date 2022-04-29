@@ -3,7 +3,7 @@ package loader;
 import org.hyperledger.fabric.gateway.Identity;
 import org.hyperledger.fabric.gateway.Wallet;
 import org.junit.jupiter.api.Test;
-import client.loader.Role;
+import client.load.Role;
 
 import java.io.IOException;
 
