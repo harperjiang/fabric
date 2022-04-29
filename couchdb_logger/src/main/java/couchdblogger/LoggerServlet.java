@@ -53,15 +53,16 @@ public class LoggerServlet extends HttpServlet {
     }
 
     protected void copy(HttpResponse from, HttpServletResponse to) throws IOException {
+
         for (Header h : from.getAllHeaders()) {
             if (h.getName().equalsIgnoreCase("transfer-encoding")) {
                 continue;
             }
             to.setHeader(h.getName(), h.getValue());
         }
-        IOUtils.copy(from.getEntity().getContent(), to.getOutputStream());
-        to.getOutputStream().flush();
         to.setStatus(from.getStatusLine().getStatusCode());
+        IOUtils.copy(from.getEntity().getContent(), to.getOutputStream());
+
     }
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpEntityEnclosingRequestBase to) throws IOException {
@@ -107,32 +108,27 @@ public class LoggerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpGet get = new HttpGet();
-        forward(req, resp, get);
+        forward(req, resp, new HttpGet());
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpPost post = new HttpPost();
-        forward(req, resp, post);
+        forward(req, resp, new HttpPost());
     }
 
     @Override
     protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpHead head = new HttpHead();
-        forward(req, resp, head);
+        forward(req, resp, new HttpHead());
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpPut put = new HttpPut();
-        forward(req, resp, put);
+        forward(req, resp, new HttpPut());
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpDelete delete = new HttpDelete();
-        forward(req, resp, delete);
+        forward(req, resp, new HttpDelete());
     }
 
 }
