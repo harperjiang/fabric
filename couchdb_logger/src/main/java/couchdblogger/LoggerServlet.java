@@ -1,7 +1,7 @@
 package couchdblogger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
@@ -17,14 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.Collections;
-import java.util.Locale;
 
 public class LoggerServlet extends HttpServlet {
 
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    private String couchdbHost = "http://localhost:5984";
+    private String couchdbHost = "localhost:5984";
     private String logFolder = "/tmp";
 
     private WorkloadLogger logger;
@@ -64,11 +64,20 @@ public class LoggerServlet extends HttpServlet {
 
     }
 
-    protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpEntityEnclosingRequestBase to) throws IOException {
+    protected URI createURI(HttpServletRequest req) {
         String path = req.getRequestURI();
-        logger.log(to.getMethod(), path);
-        String url = couchdbHost + path;
-        to.setURI(URI.create(url));
+        String query = req.getQueryString();
+        String url = MessageFormat.format("http://{0}/{1}", couchdbHost, path);
+        if (!StringUtils.isEmpty(query)) {
+            url += "?" + query;
+        }
+        return URI.create(url);
+    }
+
+    protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpEntityEnclosingRequestBase to) throws IOException {
+        URI uri = createURI(req);
+        logger.log(to.getMethod(),uri.toString());
+        to.setURI(uri);
 
         for (String s : Collections.list(req.getHeaderNames())) {
             if (!s.equalsIgnoreCase("content-length")) {
@@ -86,30 +95,27 @@ public class LoggerServlet extends HttpServlet {
     }
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpRequestBase to) throws IOException {
-        String path = req.getRequestURI();
-        logger.log(to.getMethod(), path);
-        String url = couchdbHost + path;
-        to.setURI(URI.create(url));
-
+        URI uri = createURI(req);
+        logger.log(to.getMethod(),uri.toString());
+        to.setURI(uri);
         for (String s : Collections.list(req.getHeaderNames())) {
             to.setHeader(s, req.getHeader(s));
         }
-
         HttpResponse response = httpclient.execute(to);
         copy(response, resp);
     }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Request:" + req.getMethod() + ":" + req.getRequestURI());
-        for (String header : Collections.list(req.getHeaderNames())) {
-            System.out.println(header + ":" + req.getHeader(header));
-        }
+//        System.out.println("Request:" + req.getMethod() + ":" + req.getRequestURI());
+//        for (String header : Collections.list(req.getHeaderNames())) {
+//            System.out.println(header + ":" + req.getHeader(header));
+//        }
         super.service(req, resp);
-        System.out.println(resp.getStatus());
-        for (String header : resp.getHeaderNames()) {
-            System.out.println(header + ":" + resp.getHeader(header));
-        }
+//        System.out.println(resp.getStatus());
+//        for (String header : resp.getHeaderNames()) {
+//            System.out.println(header + ":" + resp.getHeader(header));
+//        }
     }
 
     @Override
