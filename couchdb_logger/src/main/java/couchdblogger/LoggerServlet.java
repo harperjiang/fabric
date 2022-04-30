@@ -24,7 +24,7 @@ public class LoggerServlet extends HttpServlet {
 
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
-    private String couchdbHost = "localhost:5984";
+    private String couchdbHost = "";
     private String logFolder = "/tmp";
 
     private WorkloadLogger logger;
@@ -67,7 +67,7 @@ public class LoggerServlet extends HttpServlet {
     protected URI createURI(HttpServletRequest req) {
         String path = req.getRequestURI();
         String query = req.getQueryString();
-        String url = MessageFormat.format("http://{0}/{1}", couchdbHost, path);
+        String url = MessageFormat.format("http://{0}{1}", couchdbHost, path);
         if (!StringUtils.isEmpty(query)) {
             url += "?" + query;
         }
