@@ -30,7 +30,3 @@ services:
       - COUCHDB_HOST=realcouchdb1:5984
     ports:
       - "8081:8080"
-networks:
-  default:
-    external:
-      name: fabric_test
