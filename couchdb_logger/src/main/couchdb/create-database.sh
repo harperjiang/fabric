@@ -1,2 +1,0 @@
-curl -X PUT --user admin:adminpw http://localhost:5984/fabric__internal
-curl -X PUT --user admin:adminpw http://localhost:5984/fabric__internal/dataformatVersion -d '{"key":dataformatVersion, "Version":"2.0"}'

@@ -15,7 +15,7 @@ services:
   logger0:
     container_name: couchdb0
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile_logger
     environment:
       - COUCHDB_HOST=realcouchdb0:5984
@@ -24,7 +24,7 @@ services:
   logger1:
     container_name: couchdb1
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile_logger
     environment:
       - COUCHDB_HOST=realcouchdb1:5984

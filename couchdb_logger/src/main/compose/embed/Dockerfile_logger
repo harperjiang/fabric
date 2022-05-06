@@ -1,0 +1,4 @@
+FROM openjdk:11
+COPY logger.jar /
+EXPOSE 8080
+CMD ["java", "-cp", "/logger.jar", "couchdblogger.embed.EmbedHttpServer"]

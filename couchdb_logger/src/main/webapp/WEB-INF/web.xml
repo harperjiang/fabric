@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>LoggerServlet</servlet-name>
-        <servlet-class>couchdblogger.LoggerServlet</servlet-class>
+        <servlet-class>couchdblogger.servlet.LoggerServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
