@@ -5,11 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.harper</groupId>
     <artifactId>couchdb_logger</artifactId>
-    <packaging>war</packaging>
+    <packaging>${packaging.type}</packaging>
     <version>1.0.0</version>
     <profiles>
         <profile>
             <id>embed</id>
+            <properties>
+                <packaging.type>jar</packaging.type>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -36,6 +39,9 @@
         </profile>
         <profile>
             <id>tomcat</id>
+            <properties>
+                <packaging.type>war</packaging.type>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
