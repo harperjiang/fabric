@@ -1,5 +1,6 @@
-package couchdblogger;
+package couchdblogger.servlet;
 
+import couchdblogger.WorkloadLogger;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -107,15 +108,7 @@ public class LoggerServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        System.out.println("Request:" + req.getMethod() + ":" + req.getRequestURI());
-//        for (String header : Collections.list(req.getHeaderNames())) {
-//            System.out.println(header + ":" + req.getHeader(header));
-//        }
         super.service(req, resp);
-//        System.out.println(resp.getStatus());
-//        for (String header : resp.getHeaderNames()) {
-//            System.out.println(header + ":" + resp.getHeader(header));
-//        }
     }
 
     @Override
