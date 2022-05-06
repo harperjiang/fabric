@@ -52,10 +52,11 @@ public class EmbedHttpServer {
     }
 
     protected void copy(HttpResponse from, HttpExchange to) throws IOException {
-        to.sendResponseHeaders(from.getStatusLine().getStatusCode(), 0);
+
         for (Header h : from.getAllHeaders()) {
             to.getResponseHeaders().add(h.getName(), h.getValue());
         }
+        to.sendResponseHeaders(from.getStatusLine().getStatusCode(), 0);
         IOUtils.copy(from.getEntity().getContent(), to.getResponseBody());
         to.getResponseBody().close();
     }
