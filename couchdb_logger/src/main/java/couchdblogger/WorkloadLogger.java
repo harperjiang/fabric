@@ -13,6 +13,8 @@ public class WorkloadLogger {
 
     PrintWriter output;
 
+    ThreadLocal<LogRecord> records = ThreadLocal.withInitial(() -> new LogRecord());
+
     public WorkloadLogger(String logFolder) {
         try {
             output = new PrintWriter(Paths.get(logFolder, "workload.log").toAbsolutePath().toString());
@@ -22,11 +24,30 @@ public class WorkloadLogger {
         }
     }
 
-    public void log(String method, String url) {
+    public void begin(String method, String url) {
         if (url == null) {
             url = "/";
         }
-        output.println(MessageFormat.format("{0},{1},{2}", String.valueOf(System.currentTimeMillis()), method, url));
+        this.records.get().record(method, url);
+    }
+
+    public void end() {
+        LogRecord record = this.records.get();
+        long elapse = System.currentTimeMillis() - record.startTime;
+        output.println(MessageFormat.format("{0},{1},{2},{3}", String.valueOf(record.startTime), String.valueOf(elapse), record.method, record.url));
+    }
+
+
+    static class LogRecord {
+        String method;
+        String url;
+        long startTime = System.currentTimeMillis();
+
+        public void record(String m, String u) {
+            this.method = m;
+            this.url = u;
+            this.startTime = System.currentTimeMillis();
+        }
     }
 
     class FlushThread extends Thread {

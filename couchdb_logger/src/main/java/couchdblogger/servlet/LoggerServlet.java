@@ -77,7 +77,7 @@ public class LoggerServlet extends HttpServlet {
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpEntityEnclosingRequestBase to) throws IOException {
         URI uri = createURI(req);
-        logger.log(to.getMethod(),uri.toString());
+        logger.begin(to.getMethod(),uri.toString());
         to.setURI(uri);
 
         for (String s : Collections.list(req.getHeaderNames())) {
@@ -93,17 +93,19 @@ public class LoggerServlet extends HttpServlet {
 
         HttpResponse response = httpclient.execute(to);
         copy(response, resp);
+        logger.end();
     }
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpRequestBase to) throws IOException {
         URI uri = createURI(req);
-        logger.log(to.getMethod(),uri.toString());
+        logger.begin(to.getMethod(),uri.toString());
         to.setURI(uri);
         for (String s : Collections.list(req.getHeaderNames())) {
             to.setHeader(s, req.getHeader(s));
         }
         HttpResponse response = httpclient.execute(to);
         copy(response, resp);
+        logger.end();
     }
 
     @Override

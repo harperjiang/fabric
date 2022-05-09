@@ -22,6 +22,8 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class EmbedHttpServer {
@@ -32,6 +34,8 @@ public class EmbedHttpServer {
     private String logFolder = "/tmp";
 
     private WorkloadLogger logger;
+
+    private ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
     public EmbedHttpServer() throws Exception {
         // Also support override the setting with env
@@ -47,12 +51,17 @@ public class EmbedHttpServer {
         logger = new WorkloadLogger(this.logFolder);
 
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext("/", httpExchange -> forward(httpExchange));
+        server.createContext("/", httpExchange -> threadPool.execute(() -> {
+            try {
+                forward(httpExchange);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
         server.start();
     }
 
     protected void copy(HttpResponse from, HttpExchange to) throws IOException {
-
         for (Header h : from.getAllHeaders()) {
             to.getResponseHeaders().add(h.getName(), h.getValue());
         }
@@ -73,10 +82,11 @@ public class EmbedHttpServer {
     }
 
     protected void forward(HttpExchange exchange) throws IOException {
-        logger.log(exchange.getRequestMethod(), exchange.getRequestURI().toString());
+        logger.begin(exchange.getRequestMethod(), exchange.getRequestURI().toString());
         HttpRequestBase forwardReq = createRequest(exchange);
         HttpResponse response = httpclient.execute(forwardReq);
         copy(response, exchange);
+        logger.end();
     }
 
     private HttpRequestBase createRequest(HttpExchange exchange) throws IOException {
