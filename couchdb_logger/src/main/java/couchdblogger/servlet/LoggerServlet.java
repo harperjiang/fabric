@@ -93,7 +93,7 @@ public class LoggerServlet extends HttpServlet {
 
         HttpResponse response = httpclient.execute(to);
         copy(response, resp);
-        logger.end();
+        logger.end(response.getStatusLine().getStatusCode());
     }
 
     protected void forward(HttpServletRequest req, HttpServletResponse resp, HttpRequestBase to) throws IOException {
@@ -105,7 +105,7 @@ public class LoggerServlet extends HttpServlet {
         }
         HttpResponse response = httpclient.execute(to);
         copy(response, resp);
-        logger.end();
+        logger.end(response.getStatusLine().getStatusCode());
     }
 
     @Override

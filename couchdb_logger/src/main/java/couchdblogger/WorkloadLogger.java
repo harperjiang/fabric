@@ -31,12 +31,12 @@ public class WorkloadLogger {
         this.records.get().record(method, url);
     }
 
-    public void end() {
+    public void end(int code) {
         LogRecord record = this.records.get();
         long elapse = System.currentTimeMillis() - record.startTime;
-        output.println(MessageFormat.format("{0},{1},{2},{3}", String.valueOf(record.startTime), String.valueOf(elapse), record.method, record.url));
+        output.println(MessageFormat.format("{0},{1},{2},{3},{4}", String.valueOf(record.startTime),
+                String.valueOf(elapse), code, record.method, record.url));
     }
-
 
     static class LogRecord {
         String method;
