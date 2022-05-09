@@ -86,7 +86,7 @@ public class EmbedHttpServer {
         HttpRequestBase forwardReq = createRequest(exchange);
         HttpResponse response = httpclient.execute(forwardReq);
         copy(response, exchange);
-        logger.end();
+        logger.end(response.getStatusLine().getStatusCode());
     }
 
     private HttpRequestBase createRequest(HttpExchange exchange) throws IOException {
