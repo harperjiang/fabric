@@ -66,5 +66,7 @@ public class RouteTwo {
             paper = CommercialPaper.deserialize(response);
             System.out.println(paper);
         }
+
+        stopWatch.output(logger);
     }
 }

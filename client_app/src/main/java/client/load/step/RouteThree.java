@@ -59,5 +59,7 @@ public class RouteThree {
             paper = CommercialPaper.deserialize(response);
             System.out.println(paper);
         }
+
+        stopWatch.output(logger);
     }
 }

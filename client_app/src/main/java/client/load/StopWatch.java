@@ -1,5 +1,7 @@
 package client.load;
 
+import org.slf4j.Logger;
+
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -22,7 +24,15 @@ public class StopWatch {
 
     public void output(PrintWriter to) {
         for (Record rec : records) {
-            to.write(rec.toString());
+            to.println(rec.toString());
+        }
+        to.flush();
+        records.clear();
+    }
+
+    public void output(Logger logger) {
+        for (Record rec : records) {
+            logger.info(rec.toString());
         }
         records.clear();
     }
@@ -43,7 +53,7 @@ public class StopWatch {
 
         @Override
         public String toString() {
-            return MessageFormat.format("{0},{1},{2}", name, start, elapse);
+            return MessageFormat.format("{0},{1},{2}", name, String.valueOf(start), String.valueOf(elapse));
         }
     }
 
