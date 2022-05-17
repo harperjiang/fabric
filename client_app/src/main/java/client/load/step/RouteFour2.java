@@ -1,7 +1,10 @@
 package client.load.step;
 
 import client.ClientAppConfig;
-import client.load.*;
+import client.load.Connection;
+import client.load.LoadRunner;
+import client.load.Role;
+import client.load.StopWatch;
 import commercialpaper.papernet.CommercialPaper;
 import org.hyperledger.fabric.gateway.Contract;
 import org.slf4j.Logger;
@@ -9,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-public class RouteFour {
+public class RouteFour2 {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -22,7 +25,7 @@ public class RouteFour {
              Connection digibankcon = Connection.connectAs(con1path, "mychannel", new Role.Digibank())) {
             Contract magcontract = magcon.getContract(LoadRunner.CHAINCODE_NAME, LoadRunner.CONTRACT_NAME);
             Contract digicontract = digibankcon.getContract(LoadRunner.CHAINCODE_NAME, LoadRunner.CONTRACT_NAME);
-            new RouteFour().execute(magcontract, digicontract, args[0]);
+            new RouteFour2().execute(magcontract, digicontract, args[0]);
         }
     }
 
@@ -30,7 +33,7 @@ public class RouteFour {
         CommercialPaper paper = null;
 
         stopWatch.start("get");
-        byte[] response = digicontract.evaluateTransaction("get", paperNumber);
+        byte[] response = magcontract.evaluateTransaction("get", paperNumber);
         stopWatch.record();
 
         // Process response
