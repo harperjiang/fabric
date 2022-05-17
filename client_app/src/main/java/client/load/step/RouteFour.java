@@ -30,7 +30,7 @@ public class RouteFour {
         CommercialPaper paper = null;
 
         stopWatch.start("get");
-        byte[] response = magcontract.submitTransaction("get", paperNumber);
+        byte[] response = magcontract.evaluateTransaction("get", paperNumber);
         stopWatch.record();
 
         // Process response
