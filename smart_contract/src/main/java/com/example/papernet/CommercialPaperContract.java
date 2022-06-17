@@ -244,4 +244,12 @@ public class CommercialPaperContract implements ContractInterface {
         ctx.getPaperList().updatePaper(paper);
         return paper;
     }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public CommercialPaper get(CommercialPaperContext ctx, final String paperNumber) {
+        String paperKey = CommercialPaper.makeKey(new String[]{paperNumber});
+        CommercialPaper paper = ctx.getPaperList().getPaper(paperKey);
+
+        return paper;
+    }
 }

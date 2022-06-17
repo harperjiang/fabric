@@ -1,10 +1,7 @@
 package client.load.step;
 
 import client.ClientAppConfig;
-import client.load.Connection;
-import client.load.Role;
-import client.load.Utils;
-import client.load.LoadRunner;
+import client.load.*;
 import commercialpaper.papernet.CommercialPaper;
 import org.hyperledger.fabric.gateway.Contract;
 import org.slf4j.*;
@@ -14,6 +11,8 @@ import java.nio.file.Path;
 public class RouteOne {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    StopWatch stopWatch = new StopWatch();
 
     public static void main(String[] args) throws Exception {
         Path con1path = Path.of(ClientAppConfig.FABRIC_SAMPLE_PATH, "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
@@ -28,8 +27,12 @@ public class RouteOne {
 
     public void execute(Contract magcontract, Contract digicontract, String paperNumber) throws Exception {
         CommercialPaper paper = null;
+
+        stopWatch.start("issue");
         byte[] response = magcontract.submitTransaction("issue", "MagnetoCorp", paperNumber,
                 Utils.randomDate(), Utils.randomDate(), Utils.randomPrice());
+        stopWatch.record();
+
         // Process response
         if (logger.isDebugEnabled()) {
             System.out.println("Process issue transaction response.");
@@ -37,21 +40,29 @@ public class RouteOne {
             System.out.println(paper);
         }
 
+        stopWatch.start("buy");
         response = digicontract.submitTransaction("buy", "MagnetoCorp", paperNumber, "MagnetoCorp", "DigiBank",
                 Utils.randomPrice(), Utils.randomDate());
-        if(logger.isDebugEnabled()) {
+        stopWatch.record();
+
+        if (logger.isDebugEnabled()) {
             // Process response
             System.out.println("Process buy transaction response.");
             paper = CommercialPaper.deserialize(response);
             System.out.println(paper);
         }
 
+        stopWatch.start("redeem");
         response = digicontract.submitTransaction("redeem", "MagnetoCorp", paperNumber, "DigiBank", Utils.randomDate());
-        if(logger.isDebugEnabled()) {
+        stopWatch.record();
+
+        if (logger.isDebugEnabled()) {
             // Process response
             System.out.println("Process redeem transaction response.");
             paper = CommercialPaper.deserialize(response);
             System.out.println(paper);
         }
+
+        stopWatch.output(logger);
     }
 }
