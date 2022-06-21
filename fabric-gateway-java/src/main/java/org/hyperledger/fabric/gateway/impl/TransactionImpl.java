@@ -14,7 +14,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.spi.LoggerFactory;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.GatewayRuntimeException;
 import org.hyperledger.fabric.gateway.Transaction;
@@ -106,15 +105,13 @@ public final class TransactionImpl implements Transaction {
     public byte[] submit(final String... args) throws ContractException, TimeoutException, InterruptedException {
         long start = System.currentTimeMillis();
         Collection<ProposalResponse> proposalResponses = endorseTransaction(args);
-        long point1 = System.currentTimeMillis();
+        long endorse = System.currentTimeMillis();
         Collection<ProposalResponse> validResponses = validatePeerResponses(proposalResponses);
-        long point2 = System.currentTimeMillis();
-
-        if (LOG.isInfoEnabled()) {
-            LOG.info(String.format("Proposal Time:%d", point1 - start));
-            LOG.info(String.format("Validate Time:%d", point2 - point1));
+        long validate = System.currentTimeMillis();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(String.format("Endorse Time: %l", endorse - start));
+            LOG.debug(String.format("Validate Time: %l", validate - endorse));
         }
-
         try {
             return commitTransaction(validResponses);
         } catch (ContractException e) {

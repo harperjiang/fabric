@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+    compileOnly 'commons-logging:commons-logging:1.2'
+    implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
     implementation 'org.hyperledger.fabric-sdk-java:fabric-sdk-java:[2.2.0,2.3.0)'
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'com.ibm.cloud:cloudant:0.1.4'
