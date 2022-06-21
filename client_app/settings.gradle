@@ -3,3 +3,5 @@
  */
 
 rootProject.name = 'client_app'
+include ":fabric-gateway-java"
+project(":fabric-gateway-java").projectDir = file("../fabric-gateway-java")
