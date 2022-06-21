@@ -109,8 +109,8 @@ public final class TransactionImpl implements Transaction {
         Collection<ProposalResponse> validResponses = validatePeerResponses(proposalResponses);
         long validate = System.currentTimeMillis();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(String.format("Endorse Time: %l", endorse - start));
-            LOG.debug(String.format("Validate Time: %l", validate - endorse));
+            LOG.debug(String.format("Endorse Time: %d", endorse - start));
+            LOG.debug(String.format("Validate Time: %d", validate - endorse));
         }
         try {
             return commitTransaction(validResponses);
